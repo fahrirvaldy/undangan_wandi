@@ -1,13 +1,43 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import imgCover from './assets/foto-cover.jpg'; // Pastikan file foto sudah ada
 import imgEvent from './assets/foto-acara.jpg';
+import bgMusic from './assets/pure-love-304010.mp3';
 
 export default function UltraMinimalistInvitation() {
   const urlParams = new URLSearchParams(window.location.search);
   const guestName = urlParams.get('to') || 'Tamu Kehormatan';
 
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const toggleMusic = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
   return (
     <div className="font-sans text-slate-800 bg-white selection:bg-slate-200">
+      {/* Elemen Audio (Tersembunyi) */}
+      <audio ref={audioRef} src={bgMusic} loop preload="auto" />
+
+      {/* Tombol Musik Melayang */}
+      <button
+        onClick={toggleMusic}
+        className={`fixed bottom-6 right-6 z-50 w-12 h-12 bg-white/90 backdrop-blur-sm text-slate-800 rounded-full shadow-xl border border-slate-200 flex items-center justify-center transition-all duration-300 hover:scale-110 ${isPlaying ? 'animate-[spin_4s_linear_infinite]' : ''}`}
+        aria-label="Toggle Music"
+      >
+        {isPlaying ? (
+          // Ikon Nada Musik (Menyala)
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.236l8-1.6V11.114A4.369 4.369 0 0015 11c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" /></svg>
+        ) : (
+          // Ikon Mute (Mati)
+          <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
+        )}
+      </button>
       
       {/* SECTION 1: COVER (FOTO 1) */}
       <section className="relative w-full h-screen flex flex-col items-center justify-center text-center px-4 overflow-hidden">
